@@ -1,16 +1,15 @@
-import requests
 import string
-from flask import render_template, url_for, redirect, flash, jsonify, request, send_file
-from io import BytesIO
+
+from flask import jsonify, request, url_for
 
 from . import app, db
-from .forms import FileLoad
-from .views import get_unique_short_id, upload_yandex_disk, get_download_link
 from .models import URLMap
+from .views import get_unique_short_id
 
 
 @app.route('/api/id/', methods=['POST'])
 def api_urlview():
+    """Функция для создания короткой ссылки"""
     if not request.get_data():
         return jsonify({'message': 'Отсутствует тело запроса'}), 400
 
@@ -53,9 +52,10 @@ def api_urlview():
                 }), 400
 
             if not URLMap.is_short_unique(custom_id):
-                return jsonify({
-                    'message': 'Предложенный вариант короткой ссылки уже существует.'
-                }), 400
+                error_message = (
+                    'Предложенный вариант короткой ссылки уже существует.'
+                )
+                return jsonify({'message': error_message}), 400
 
     short_id = custom_id if custom_id else get_unique_short_id()
 

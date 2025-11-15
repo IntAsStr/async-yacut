@@ -1,11 +1,11 @@
 import os
 import sys
+from io import BytesIO
 from pathlib import Path
 from random import choice
 
 import pytest
 from dotenv import load_dotenv
-from io import BytesIO
 from PIL import Image
 
 load_dotenv()

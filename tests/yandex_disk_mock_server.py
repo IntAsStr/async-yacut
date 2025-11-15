@@ -1,9 +1,9 @@
-import aiohttp
 import re
 from contextlib import suppress
 from hashlib import md5
-from urllib.parse import unquote, quote
+from urllib.parse import quote, unquote
 
+import aiohttp
 import pytest
 from aiohttp import web
 

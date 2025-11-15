@@ -1,14 +1,16 @@
-import aiohttp
-import requests
 import random
 import string
 import urllib
-
 from io import BytesIO
-from flask import abort, flash, redirect, render_template, url_for, current_app, send_file
+
+import aiohttp
+import requests
+from flask import (current_app, flash, redirect, render_template, send_file,
+                   url_for)
+
 from . import app, db
+from .forms import FileLoad, URLForm
 from .models import URLMap
-from .forms import URLForm, FileLoad
 
 
 def get_unique_short_id(length=6):
@@ -156,18 +158,18 @@ async def file_load():
             print(f"Download URL: {download_url}")
             short_id = get_unique_short_id()
             urlmap = URLMap(
-                    original=download_url,
-                    short=short_id
-                )
+                original=download_url,
+                short=short_id
+            )
             db.session.add(urlmap)
             db.session.commit()
 
             file_links.append({
-                    'filename': file.filename,
-                    'short_url': url_for(
-                        'download_file', short_id=short_id, _external=True
-                    ),
-                    'debug_url': download_url
-                })
+                'filename': file.filename,
+                'short_url': url_for(
+                    'download_file', short_id=short_id, _external=True
+                ),
+                'debug_url': download_url
+            })
             flash(f'Файл {file.filename} успешно загружен!', 'success')
     return render_template('files.html', form=form, file_links=file_links)
