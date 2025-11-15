@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="container my-5 px-4">
+  <h1 class="text-center"><span style="color:red">Ya</span>Cut</h1>
+  <p class="text-center my-4">
+    Создайте короткую ссылку автоматически или предложите свой вариант
+  </p>
+
+  <div class="container">
+    <div class="row my-3">
+      <div class="col-sm"></div>
+      <div class="col-sm">
+        <form method="POST">
+          {{ form.hidden_tag() }}
+          <div>
+            <div>
+              {{ form.original_link(class="form-control form-control-lg py-2 mb-3", placeholder="Длинная ссылка") }}
+              {% for error in form.original_link.errors %}
+                <p><span style="color:red">{{ error }}</span></p>
+              {% endfor %}
+            </div>
+            <div>
+              {{ form.custom_id(class="form-control form-control-lg py-2 mb-3", placeholder="Ваш вариант короткой ссылки") }}
+              {% for error in form.custom_id.errors %}
+                <p><span style="color:red">{{ error }}</span></p>
+              {% endfor %}
+            </div>
+            {{ form.submit(class="btn btn-primary", value="Создать") }}
+          </div>
+        </form>
+      </div>
+      <div class="col-sm"></div>
+    </div>
+  </div>
+
+  {% if short_url %}
+    <div class="container">
+      <div class="row">
+        <div class="col-sm"></div>
+        <div class="col-sm">
+          <p class="text-center">
+            <h5 class="text-center">Ваша новая ссылка готова:</h5>
+            <p class="text-center">
+              <a href="{{ short_url }}" target="_blank">{{ short_url }}</a>
+            </p>
+          </p>
+        </div>
+        <div class="col-sm"></div>
+      </div>
+    </div>
+  {% endif %}
+  {% with messages = get_flashed_messages(category_filter=["error"]) %}
+    {% if messages %}
+      {% for message in messages %}
+        <div class="container">
+        <div class="row">
+          <div class="col-sm"></div>
+          <div class="col-sm">
+            <p class="text-center">
+              <h5 class="text-center">{{ message }}</h5>
+              </p>
+            </div>
+            <div class="col-sm"></div>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %} 
+</section>
+{% endblock %}

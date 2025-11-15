@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="container my-5 px-4">
+  <h1 class="text-center"><span style="color:red">Ya</span>Cut</h1>
+  <p class="text-center my-4">
+    Загрузите файлы и получите на них короткие ссылки
+  </p>
+
+  <div class="container">
+    <div class="row my-3">
+      <div class="col-sm"></div>
+      <div class="col-sm">
+        <form method="POST" enctype="multipart/form-data">
+          {{ form.hidden_tag() }}
+          <div class="mb-3">
+            <label class="form-label">{{ form.files.label }}</label>
+            {{ form.files(class="form-control form-control-lg") }}
+            {% for error in form.files.errors %}
+              <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+          </div>
+          {{ form.submit(class="btn btn-primary btn-lg", value="Загрузить") }}
+        </form>
+        {% if file_links %}
+            <table class="table">
+            <thead>
+                <tr>
+                <th>Имя файла</th>
+                <th>Короткая ссылка</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for link in file_links %}
+                <tr>
+                <td>{{ link.filename }}</td>
+                <td>
+                    <a href="{{ link.short_url }}" target="_blank">
+                    {{ link.short_url }}
+                    </a>
+                </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+        {% endif %}
+      </div>
+      <div class="col-sm"></div>
+    </div>
+  </div>
+</section>
+{% endblock %}

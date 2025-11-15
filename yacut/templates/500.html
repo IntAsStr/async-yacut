@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Ошибка сервера - YaCut{% endblock %}
+
+{% block content %}
+<section class="container my-5 px-4">
+    <div class="row">
+        <div class="col-sm"></div>
+        <div class="col-sm text-center">
+            <h1 class="display-1">500</h1>
+            <p class="lead">Внутренняя ошибка сервера</p>
+            <p>Что-то пошло не так. Мы уже работаем над исправлением.</p>
+            <a href="{{ url_for('index_view') }}" class="btn btn-primary">На главную</a>
+        </div>
+        <div class="col-sm"></div>
+    </div>
+</section>
+{% endblock %}

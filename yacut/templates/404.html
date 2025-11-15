@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Страница не найдена - YaCut{% endblock %}
+{% block content %}
+<section class="container my-5 px-4">
+    <div class="row">
+        <div class="col-sm"></div>
+        <div class="col-sm text-center">
+            <h1 class="display-1">404</h1>
+            <p class="lead">Страница не найдена</p>
+            <p>Запрашиваемая страница не существует.</p>
+            <a href="{{ url_for('index_view') }}" class="btn btn-primary">На главную</a>
+        </div>
+        <div class="col-sm"></div>
+    </div>
+</section>
+{% endblock %}
