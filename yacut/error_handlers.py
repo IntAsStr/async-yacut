@@ -13,7 +13,7 @@ class InvalidAPIUsage(Exception):
             self.status_code = status_code
 
     def to_dict(self):
-        return dict(message=self.message)
+        return {'message': self.message}
 
 
 @app.errorhandler(InvalidAPIUsage)
