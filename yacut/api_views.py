@@ -1,9 +1,10 @@
-from flask import jsonify, request, url_for
 from http import HTTPStatus
+
+from flask import jsonify, request, url_for
 
 from . import app, db
 from .models import URLMap
-from .views import get_unique_short_id, is_short_available, get_by_short
+from .views import get_by_short, get_unique_short_id, is_short_available
 
 
 @app.route('/api/id/', methods=['POST'])

@@ -2,13 +2,12 @@ import random
 from io import BytesIO
 
 import requests
-from flask import (flash, redirect, render_template, send_file,
-                   url_for)
+from flask import flash, redirect, render_template, send_file, url_for
 
 from . import app, db
 from .forms import FileLoad, URLForm
 from .models import URLMap
-from .yandex_disk import upload_yandex_disk, get_download_link
+from .yandex_disk import get_download_link, upload_yandex_disk
 
 
 def is_short_unique(short):
@@ -21,9 +20,10 @@ def get_by_short(short_id):
     return URLMap.query.filter_by(short=short_id).first()
 
 
-def get_unique_short_id(length=6):
+def get_unique_short_id():
     characters = app.config['ALLOWED_SHORT_ID_CHARS']
     max_attempts = app.config['MAX_ATTEMPS']
+    length = app.config['SHORT_ID_LENGTH']
 
     for _ in range(max_attempts):
         short_id = ''.join(random.choices(characters, k=length))
@@ -46,8 +46,8 @@ def index_view():
         return render_template('index.html', form=form, short_url=short_url)
 
     original = form.original_link.data
-    custom_short = form.custom_id.data if form.custom_id.data else ""
-    if custom_short != "":
+    custom_short = form.custom_id.data if form.custom_id.data else ''
+    if custom_short != '':
         if not is_short_available(custom_short):
             flash(
                 'Предложенный вариант короткой ссылки уже существует.',
@@ -107,27 +107,28 @@ def download_file(short_id):
 async def file_load():
     form = FileLoad()
     file_links = []
-    if form.validate_on_submit():
-        files = form.files.data
+    if not form.validate_on_submit():
+        return render_template('files.html', form=form, file_links=file_links)
 
-        for file in files:
-            file_path = await upload_yandex_disk(file)
-            download_url = await get_download_link(file_path)
-            print(f"Download URL: {download_url}")
-            short_id = get_unique_short_id()
-            urlmap = URLMap(
-                original=download_url,
-                short=short_id
-            )
-            db.session.add(urlmap)
-            db.session.commit()
+    files = form.files.data
 
-            file_links.append({
-                'filename': file.filename,
-                'short_url': url_for(
-                    'download_file', short_id=short_id, _external=True
-                ),
-                'debug_url': download_url
-            })
-            flash(f'Файл {file.filename} успешно загружен!', 'success')
+    for file in files:
+        file_path = await upload_yandex_disk(file)
+        download_url = await get_download_link(file_path)
+        short_id = get_unique_short_id()
+        urlmap = URLMap(
+            original=download_url,
+            short=short_id
+        )
+        db.session.add(urlmap)
+        db.session.commit()
+
+        file_links.append({
+            'filename': file.filename,
+            'short_url': url_for(
+                'download_file', short_id=short_id, _external=True
+            ),
+            'debug_url': download_url
+        })
+        flash(f'Файл {file.filename} успешно загружен!', 'success')
     return render_template('files.html', form=form, file_links=file_links)

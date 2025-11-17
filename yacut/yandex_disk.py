@@ -1,6 +1,8 @@
-import aiohttp
 import urllib.parse
+
+import aiohttp
 from flask import current_app
+from .error_handlers import InvalidAPIUsage
 
 
 async def upload_yandex_disk(file):
@@ -22,7 +24,7 @@ async def upload_yandex_disk(file):
         async with session.put(put_url, data=file.read()) as response:
             location = response.headers.get('Location')
             if not location:
-                raise Exception('Не удалось получить расположение файла')
+                raise InvalidAPIUsage('Не удалось получить расположение файла')
 
             location = urllib.parse.unquote(location)
             location = location.replace('/disk', '')
@@ -42,7 +44,7 @@ async def get_download_link(file_path):
         ) as response:
             if response.status != 200:
                 error_text = await response.text()
-                raise Exception(
+                raise InvalidAPIUsage(
                     f'Ошибка получения ссылки: {response.status}: {error_text}'
                 )
             data = await response.json()

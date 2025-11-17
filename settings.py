@@ -15,3 +15,4 @@ class Config(object):
     ALLOWED_SHORT_ID_CHARS = string.ascii_letters + string.digits
     MAX_ATTEMPS = 10
     DOWNLOAD_URL = 'https://cloud-api.yandex.net/v1/disk/resources/download'
+    SHORT_ID_LENGTH = 6
